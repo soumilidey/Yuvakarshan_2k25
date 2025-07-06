@@ -1,2 +1,2 @@
 # Yuvakarshan_2k25
-app
+Food Distribution and Donation app.
