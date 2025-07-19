@@ -35,7 +35,11 @@ export default function RequestScreen() {
   const ListHeader = () => (
     <>
       <ThemedView style={styles.header}>
-        <ThemedText type="title">Available Donations</ThemedText>
+        <ThemedView style={styles.headerRow}>
+          <ThemedText style={styles.headerTitle} type="title">
+            Available Donations
+          </ThemedText>
+        </ThemedView>
         <ThemedText>Find food donations near you</ThemedText>
       </ThemedView>
 
@@ -99,6 +103,9 @@ export default function RequestScreen() {
 
   return (
     <ThemedView style={styles.container}>
+      <Pressable style={styles.backButton} onPress={() => router.back()}>
+        <ThemedText>← Back</ThemedText>
+      </Pressable>
       <FlatList
         data={MOCK_DONATIONS}
         renderItem={renderDonationItem}
@@ -119,6 +126,22 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     gap: 10,
+    marginTop: 20,
+  },
+  backButton: {
+    position: "absolute",
+    left: 20,
+    top: 20,
+    padding: 10,
+    zIndex: 1,
+  },
+  headerTitle: {
+    textAlign: "center",
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
   },
   searchContainer: {
     padding: 20,

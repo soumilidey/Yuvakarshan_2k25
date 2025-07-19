@@ -43,7 +43,12 @@ export default function DonateScreen() {
   return (
     <ScrollView style={styles.container}>
       <ThemedView style={styles.header}>
-        <ThemedText type="title">Donate Food</ThemedText>
+        <ThemedView style={styles.headerRow}>
+          <Pressable style={styles.backButton} onPress={() => router.back()}>
+            <ThemedText>← Back</ThemedText>
+          </Pressable>
+          <ThemedText type="title">Donate Food</ThemedText>
+        </ThemedView>
         <ThemedText>Share your surplus food with those in need</ThemedText>
       </ThemedView>
 
@@ -114,6 +119,18 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     gap: 10,
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    position: "relative",
+    justifyContent: "center",
+  },
+  backButton: {
+    position: "absolute",
+    left: 0,
+    padding: 8,
   },
   form: {
     padding: 20,
