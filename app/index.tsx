@@ -11,8 +11,14 @@ export default function HomeScreen() {
   return (
     <ScrollView style={styles.container}>
       <ThemedView style={styles.header}>
+        <Pressable
+          style={styles.loginButton}
+          onPress={() => router.push("/login")}
+        >
+          <ThemedText>Login</ThemedText>
+        </Pressable>
         <Image
-          source={require("@/assets/images/icon.png")} // Add your app logo
+          source={require("@/assets/images/icon.png")}
           style={styles.logo}
         />
         <ThemedText type="title">FoodShare</ThemedText>
@@ -66,6 +72,16 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     gap: 10,
+    position: "relative",
+  },
+  loginButton: {
+    position: "absolute",
+    right: 20,
+    top: 20,
+    padding: 10,
+    backgroundColor: "#A1CEDC",
+    borderRadius: 8,
+    zIndex: 1,
   },
   logo: {
     width: 100,
