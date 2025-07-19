@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { Pressable, ScrollView, StyleSheet } from "react-native";
 
+import { Menu } from "@/components/Menu";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
@@ -9,58 +10,61 @@ export default function HomeScreen() {
   const router = useRouter();
 
   return (
-    <ScrollView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <Pressable
-          style={styles.loginButton}
-          onPress={() => router.push("/login")}
-        >
-          <ThemedText>Login</ThemedText>
-        </Pressable>
-        <Image
-          source={require("@/assets/images/icon.png")}
-          style={styles.logo}
-        />
-        <ThemedText type="title">FoodShare</ThemedText>
-      </ThemedView>
+    <>
+      <Menu />
+      <ScrollView style={styles.container}>
+        <ThemedView style={styles.header}>
+          <Pressable
+            style={styles.loginButton}
+            onPress={() => router.push("/login")}
+          >
+            <ThemedText>Login</ThemedText>
+          </Pressable>
+          <Image
+            source={require("@/assets/images/icon.png")}
+            style={styles.logo}
+          />
+          <ThemedText type="title">FoodShare</ThemedText>
+        </ThemedView>
 
-      <ThemedView style={styles.actionContainer}>
-        <Pressable
-          style={styles.actionButton}
-          onPress={() => router.push("/donate")}
-        >
-          <ThemedText type="subtitle">Donate Food</ThemedText>
-          <ThemedText>Share your surplus food with those in need</ThemedText>
-        </Pressable>
+        <ThemedView style={styles.actionContainer}>
+          <Pressable
+            style={styles.actionButton}
+            onPress={() => router.push("/donate")}
+          >
+            <ThemedText type="subtitle">Donate Food</ThemedText>
+            <ThemedText>Share your surplus food with those in need</ThemedText>
+          </Pressable>
 
-        <Pressable
-          style={styles.actionButton}
-          onPress={() => router.push("/request")}
-        >
-          <ThemedText type="subtitle">Request Food</ThemedText>
-          <ThemedText>Find available food donations near you</ThemedText>
-        </Pressable>
-      </ThemedView>
+          <Pressable
+            style={styles.actionButton}
+            onPress={() => router.push("/request")}
+          >
+            <ThemedText type="subtitle">Request Food</ThemedText>
+            <ThemedText>Find available food donations near you</ThemedText>
+          </Pressable>
+        </ThemedView>
 
-      <ThemedView style={styles.statsContainer}>
-        <ThemedText type="subtitle">Impact Statistics</ThemedText>
-        <ThemedView style={styles.statsRow}>
-          <ThemedView style={styles.statBox}>
-            <ThemedText type="title">150+</ThemedText>
-            <ThemedText>Meals Shared</ThemedText>
-          </ThemedView>
-          <ThemedView style={styles.statBox}>
-            <ThemedText type="title">50+</ThemedText>
-            <ThemedText>Active Donors</ThemedText>
+        <ThemedView style={styles.statsContainer}>
+          <ThemedText type="subtitle">Impact Statistics</ThemedText>
+          <ThemedView style={styles.statsRow}>
+            <ThemedView style={styles.statBox}>
+              <ThemedText type="title">150+</ThemedText>
+              <ThemedText>Meals Shared</ThemedText>
+            </ThemedView>
+            <ThemedView style={styles.statBox}>
+              <ThemedText type="title">50+</ThemedText>
+              <ThemedText>Active Donors</ThemedText>
+            </ThemedView>
           </ThemedView>
         </ThemedView>
-      </ThemedView>
 
-      <ThemedView style={styles.recentActivity}>
-        <ThemedText type="subtitle">Recent Activity</ThemedText>
-        {/* Add your recent activity list component here */}
-      </ThemedView>
-    </ScrollView>
+        <ThemedView style={styles.recentActivity}>
+          <ThemedText type="subtitle">Recent Activity</ThemedText>
+          {/* Add your recent activity list component here */}
+        </ThemedView>
+      </ScrollView>
+    </>
   );
 }
 
