@@ -11,6 +11,28 @@ import {
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
+import axios from 'axios';
+
+const submitRequest = async () => {
+  try {
+    const response = await axios.post('http://192.168.0.6:5000/api/requests', {
+      name: 'John Doe',
+      phone: '9876543210',
+      address: '123 Street, City',
+      itemNeeded: 'Rice',
+      quantity: 5
+    });
+
+    if (response.status === 201) {
+      alert('Request submitted successfully');
+    }
+  } catch (error) {
+    console.error('Request submission failed:', error);
+    alert('Failed to submit request');
+  }
+};
+
+
 // Interface for the donation item type
 interface DonationItem {
   id: string;
