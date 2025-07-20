@@ -41,79 +41,86 @@ export default function DonateScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <ThemedView style={styles.header}>
-        <ThemedView style={styles.headerRow}>
-          <Pressable style={styles.backButton} onPress={() => router.back()}>
-            <ThemedText>← Back</ThemedText>
+    <ThemedView style={styles.container}>
+      <ScrollView style={styles.scrollContainer}>
+        <ThemedView style={styles.header}>
+          <ThemedView style={styles.headerRow}>
+            <Pressable style={styles.backButton} onPress={() => router.back()}>
+              <ThemedText>← Back</ThemedText>
+            </Pressable>
+            <ThemedText type="title">Donate Food</ThemedText>
+          </ThemedView>
+          <ThemedText>Share your surplus food with those in need</ThemedText>
+        </ThemedView>
+
+        <ThemedView style={styles.form}>
+          <Pressable style={styles.imageUpload} onPress={pickImage}>
+            {foodImage ? (
+              <Image source={{ uri: foodImage }} style={styles.foodImage} />
+            ) : (
+              <ThemedText>Add Food Image</ThemedText>
+            )}
           </Pressable>
-          <ThemedText type="title">Donate Food</ThemedText>
+
+          <ThemedView style={styles.inputGroup}>
+            <ThemedText>Food Name</ThemedText>
+            <TextInput
+              style={styles.input}
+              value={foodName}
+              onChangeText={setFoodName}
+              placeholder="Enter food name"
+            />
+          </ThemedView>
+
+          <ThemedView style={styles.inputGroup}>
+            <ThemedText>Quantity</ThemedText>
+            <TextInput
+              style={styles.input}
+              value={quantity}
+              onChangeText={setQuantity}
+              placeholder="Enter quantity (e.g., 2 kg, 5 portions)"
+            />
+          </ThemedView>
+
+          <ThemedView style={styles.inputGroup}>
+            <ThemedText>Description</ThemedText>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              value={description}
+              onChangeText={setDescription}
+              placeholder="Enter food description"
+              multiline
+              numberOfLines={4}
+            />
+          </ThemedView>
+
+          <ThemedView style={styles.inputGroup}>
+            <ThemedText>Expiry Date</ThemedText>
+            <TextInput
+              style={styles.input}
+              value={expiryDate}
+              onChangeText={setExpiryDate}
+              placeholder="DD/MM/YYYY"
+            />
+          </ThemedView>
+
+          <Pressable style={styles.donateButton} onPress={handleDonate}>
+            <ThemedText style={styles.buttonText}>Submit Donation</ThemedText>
+          </Pressable>
         </ThemedView>
-        <ThemedText>Share your surplus food with those in need</ThemedText>
-      </ThemedView>
-
-      <ThemedView style={styles.form}>
-        <Pressable style={styles.imageUpload} onPress={pickImage}>
-          {foodImage ? (
-            <Image source={{ uri: foodImage }} style={styles.foodImage} />
-          ) : (
-            <ThemedText>Add Food Image</ThemedText>
-          )}
-        </Pressable>
-
-        <ThemedView style={styles.inputGroup}>
-          <ThemedText>Food Name</ThemedText>
-          <TextInput
-            style={styles.input}
-            value={foodName}
-            onChangeText={setFoodName}
-            placeholder="Enter food name"
-          />
-        </ThemedView>
-
-        <ThemedView style={styles.inputGroup}>
-          <ThemedText>Quantity</ThemedText>
-          <TextInput
-            style={styles.input}
-            value={quantity}
-            onChangeText={setQuantity}
-            placeholder="Enter quantity (e.g., 2 kg, 5 portions)"
-          />
-        </ThemedView>
-
-        <ThemedView style={styles.inputGroup}>
-          <ThemedText>Description</ThemedText>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            value={description}
-            onChangeText={setDescription}
-            placeholder="Enter food description"
-            multiline
-            numberOfLines={4}
-          />
-        </ThemedView>
-
-        <ThemedView style={styles.inputGroup}>
-          <ThemedText>Expiry Date</ThemedText>
-          <TextInput
-            style={styles.input}
-            value={expiryDate}
-            onChangeText={setExpiryDate}
-            placeholder="DD/MM/YYYY"
-          />
-        </ThemedView>
-
-        <Pressable style={styles.donateButton} onPress={handleDonate}>
-          <ThemedText style={styles.buttonText}>Submit Donation</ThemedText>
-        </Pressable>
-      </ThemedView>
-    </ScrollView>
+      </ScrollView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom: 40,
+  },
+  scrollContainer: {
+    flex: 1,
+    paddingTop: 30, // Add padding to create space at the top
   },
   header: {
     padding: 20,

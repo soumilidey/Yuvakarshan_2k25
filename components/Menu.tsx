@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   menuButton: {
     position: "absolute",
     left: 20,
-    top: 20,
+    top: 50,
     zIndex: 100,
     padding: 8,
   },

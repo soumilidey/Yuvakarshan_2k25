@@ -10,11 +10,10 @@ export default function VisionScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Pressable style={styles.backButton} onPress={() => router.back()}>
-        <ThemedText>← Back</ThemedText>
-      </Pressable>
-
       <ScrollView style={styles.scrollContainer}>
+        <Pressable style={styles.backButton} onPress={() => router.back()}>
+          <ThemedText>← Back</ThemedText>
+        </Pressable>
         <ThemedView style={styles.header}>
           <Image
             source={require("@/assets/images/icon.png")}
@@ -90,9 +89,11 @@ export default function VisionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom: 40,
   },
   scrollContainer: {
     flex: 1,
+    paddingTop: 30, // Add padding to create space at the top
   },
   backButton: {
     position: "absolute",
