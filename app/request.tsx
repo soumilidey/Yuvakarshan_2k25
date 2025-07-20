@@ -1,11 +1,17 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { FlatList, Pressable, StyleSheet, TextInput } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  TextInput,
+} from "react-native";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
-// First, add an interface for the donation item type
+// Interface for the donation item type
 interface DonationItem {
   id: string;
   foodName: string;
@@ -13,9 +19,10 @@ interface DonationItem {
   location: string;
   expiryDate: string;
   donorName: string;
+  description?: string;
 }
 
-// Mock data for available donations
+// Enhanced mock data for available donations
 const MOCK_DONATIONS: DonationItem[] = [
   {
     id: "1",
@@ -24,6 +31,25 @@ const MOCK_DONATIONS: DonationItem[] = [
     location: "Downtown Area",
     expiryDate: "25/07/2025",
     donorName: "John Doe",
+    description: "Mixed seasonal vegetables - tomatoes, onions, carrots",
+  },
+  {
+    id: "2",
+    foodName: "Homemade Biryani",
+    quantity: "8 portions",
+    location: "Airoli West",
+    expiryDate: "21/07/2025",
+    donorName: "Priya Sharma",
+    description: "Delicious chicken biryani with raita and pickle",
+  },
+  {
+    id: "3",
+    foodName: "Fresh Fruits",
+    quantity: "3 kg",
+    location: "Sector 19",
+    expiryDate: "23/07/2025",
+    donorName: "Raj Patel",
+    description: "Apples, bananas, and oranges - perfectly ripe",
   },
 ];
 
@@ -32,44 +58,41 @@ export default function RequestScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [location, setLocation] = useState("");
 
-  const ListHeader = () => (
-    <>
-      <ThemedView style={styles.header}>
-        <ThemedView style={styles.headerRow}>
-          <ThemedText style={styles.headerTitle} type="title">
-            Available Donations
-          </ThemedText>
-        </ThemedView>
-        <ThemedText>Find food donations near you</ThemedText>
-      </ThemedView>
+  // Animation refs
+  const headerSlide = useRef(new Animated.Value(-50)).current;
+  const headerOpacity = useRef(new Animated.Value(0)).current;
+  const searchSlide = useRef(new Animated.Value(100)).current;
+  const listSlide = useRef(new Animated.Value(150)).current;
 
-      <ThemedView style={styles.searchContainer}>
-        <ThemedView style={styles.inputGroup}>
-          <TextInput
-            style={styles.input}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            placeholder="Search for food items..."
-            autoCorrect={false}
-            autoCapitalize="none"
-            blurOnSubmit={false}
-          />
-        </ThemedView>
+  useEffect(() => {
+    // Staggered animation sequence
+    const animations = Animated.stagger(150, [
+      Animated.parallel([
+        Animated.timing(headerSlide, {
+          toValue: 0,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(headerOpacity, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.timing(searchSlide, {
+        toValue: 0,
+        duration: 700,
+        useNativeDriver: true,
+      }),
+      Animated.timing(listSlide, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]);
 
-        <ThemedView style={styles.inputGroup}>
-          <TextInput
-            style={styles.input}
-            value={location}
-            onChangeText={setLocation}
-            placeholder="Enter your location"
-            autoCorrect={false}
-            autoCapitalize="none"
-            blurOnSubmit={false}
-          />
-        </ThemedView>
-      </ThemedView>
-    </>
-  );
+    animations.start();
+  }, [headerSlide, headerOpacity, searchSlide, listSlide]);
 
   const handleRequest = (itemId: string) => {
     // Add your request logic here
@@ -77,42 +100,169 @@ export default function RequestScreen() {
     router.push("/");
   };
 
-  const renderDonationItem = ({ item }: { item: DonationItem }) => (
-    <ThemedView style={styles.donationCard}>
-      <ThemedView style={styles.donationHeader}>
-        <ThemedText type="subtitle">{item.foodName}</ThemedText>
-        <ThemedText type="defaultSemiBold" style={styles.quantity}>
-          {item.quantity}
+  const ListHeader = () => (
+    <>
+      {/* Header Section - White background */}
+      <Animated.View
+        style={[
+          styles.headerSection,
+          {
+            transform: [{ translateY: headerSlide }],
+            opacity: headerOpacity,
+          },
+        ]}
+      >
+        <Pressable style={styles.backButton} onPress={() => router.back()}>
+          <ThemedText style={styles.backText}>← Back</ThemedText>
+        </Pressable>
+
+        <ThemedView style={styles.headerContent}>
+          <ThemedText style={styles.headerTitle}>Find Food</ThemedText>
+          <ThemedText style={styles.headerEmoji}>🔍</ThemedText>
+          <ThemedText style={styles.headerSubtitle}>
+            Discover delicious meals shared by your generous neighbors
+          </ThemedText>
+        </ThemedView>
+      </Animated.View>
+
+      {/* Search Section */}
+      <Animated.View
+        style={[
+          styles.searchSection,
+          {
+            transform: [{ translateY: searchSlide }],
+          },
+        ]}
+      >
+        <ThemedView style={styles.searchCard}>
+          <ThemedText style={styles.searchTitle}>
+            🎯 Find Your Perfect Meal
+          </ThemedText>
+
+          <ThemedView style={styles.inputGroup}>
+            <ThemedText style={styles.inputLabel}>
+              What are you craving?
+            </ThemedText>
+            <TextInput
+              style={styles.input}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              placeholder="e.g., biryani, vegetables, fruits..."
+              placeholderTextColor="#9ca3af"
+              autoCorrect={false}
+              autoCapitalize="none"
+            />
+          </ThemedView>
+
+          <ThemedView style={styles.inputGroup}>
+            <ThemedText style={styles.inputLabel}>Your location</ThemedText>
+            <TextInput
+              style={styles.input}
+              value={location}
+              onChangeText={setLocation}
+              placeholder="e.g., Airoli, Sector 19..."
+              placeholderTextColor="#9ca3af"
+              autoCorrect={false}
+              autoCapitalize="none"
+            />
+          </ThemedView>
+
+          <ThemedView style={styles.searchStats}>
+            <ThemedText style={styles.statsText}>
+              🔥 {MOCK_DONATIONS.length} fresh food available nearby!
+            </ThemedText>
+          </ThemedView>
+        </ThemedView>
+      </Animated.View>
+
+      {/* List Header */}
+      <Animated.View
+        style={[
+          styles.listHeaderSection,
+          {
+            transform: [{ translateY: listSlide }],
+          },
+        ]}
+      >
+        <ThemedText style={styles.availableTitle}>✨ Available Now</ThemedText>
+        <ThemedText style={styles.availableSubtitle}>
+          Fresh donations from your community
         </ThemedText>
+      </Animated.View>
+    </>
+  );
+
+  const renderDonationItem = ({
+    item,
+    index,
+  }: {
+    item: DonationItem;
+    index: number;
+  }) => (
+    <Animated.View
+      style={[
+        styles.donationCard,
+        {
+          transform: [{ translateY: listSlide }],
+          opacity: listSlide.interpolate({
+            inputRange: [0, 150],
+            outputRange: [1, 0],
+          }),
+        },
+      ]}
+    >
+      <ThemedView style={styles.cardHeader}>
+        <ThemedView style={styles.foodInfo}>
+          <ThemedText style={styles.foodName}>{item.foodName}</ThemedText>
+          <ThemedText style={styles.quantity}>{item.quantity}</ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.statusBadge}>
+          <ThemedText style={styles.statusText}>Available</ThemedText>
+        </ThemedView>
       </ThemedView>
 
+      {item.description && (
+        <ThemedText style={styles.description}>{item.description}</ThemedText>
+      )}
+
       <ThemedView style={styles.donationDetails}>
-        <ThemedText>📍 {item.location}</ThemedText>
-        <ThemedText>⏳ Expires: {item.expiryDate}</ThemedText>
-        <ThemedText>👤 Donor: {item.donorName}</ThemedText>
+        <ThemedView style={styles.detailRow}>
+          <ThemedText style={styles.detailIcon}>📍</ThemedText>
+          <ThemedText style={styles.detailText}>{item.location}</ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.detailRow}>
+          <ThemedText style={styles.detailIcon}>⏳</ThemedText>
+          <ThemedText style={styles.detailText}>
+            Best before: {item.expiryDate}
+          </ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.detailRow}>
+          <ThemedText style={styles.detailIcon}>👤</ThemedText>
+          <ThemedText style={styles.detailText}>
+            Shared by {item.donorName}
+          </ThemedText>
+        </ThemedView>
       </ThemedView>
 
       <Pressable
         style={styles.requestButton}
         onPress={() => handleRequest(item.id)}
       >
-        <ThemedText style={styles.buttonText}>Request Food</ThemedText>
+        <ThemedText style={styles.buttonText}>Get it Now</ThemedText>
+        <ThemedText style={styles.buttonSubtext}>Connect with donor</ThemedText>
       </Pressable>
-    </ThemedView>
+    </Animated.View>
   );
 
   return (
     <ThemedView style={styles.container}>
-      <Pressable style={styles.backButton} onPress={() => router.back()}>
-        <ThemedText>← Back</ThemedText>
-      </Pressable>
       <FlatList
         data={MOCK_DONATIONS}
         renderItem={renderDonationItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={ListHeader}
-        stickyHeaderIndices={[0]}
+        showsVerticalScrollIndicator={false}
       />
     </ThemedView>
   );
@@ -121,83 +271,237 @@ export default function RequestScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom: 40,
+    backgroundColor: "#fefefe",
   },
-  header: {
-    padding: 20,
-    alignItems: "center",
-    gap: 10,
-    marginTop: 20,
+
+  // Header Section - White background
+  headerSection: {
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 30,
+    backgroundColor: "#ffffff",
   },
   backButton: {
-    position: "absolute",
-    left: 20,
-    top: 20,
-    padding: 10,
-    zIndex: 1,
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(245, 158, 11, 0.1)",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginBottom: 20,
+  },
+  backText: {
+    color: "#f59e0b",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+  headerContent: {
+    alignItems: "center",
   },
   headerTitle: {
+    fontSize: 32,
+    fontWeight: "800",
+    color: "#f59e0b",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  headerEmoji: {
+    fontSize: 40,
+    marginBottom: 12,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: "#6b7280",
+    textAlign: "center",
+    lineHeight: 24,
+    paddingHorizontal: 20,
+  },
+
+  // Search Section
+  searchSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  searchCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+    padding: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 15,
+    elevation: 8,
+    borderWidth: 2,
+    borderColor: "#fef3c7",
+  },
+  searchTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#f59e0b",
+    marginBottom: 20,
     textAlign: "center",
   },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "center",
-    width: "100%",
-  },
-  searchContainer: {
-    padding: 20,
-    gap: 15,
-  },
+
+  // Input Styles
   inputGroup: {
-    gap: 8,
+    marginBottom: 16,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#374151",
+    marginBottom: 8,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#CCCCCC",
-    borderRadius: 8,
-    padding: 12,
+    borderWidth: 2,
+    borderColor: "#e5e7eb",
+    borderRadius: 12,
+    padding: 16,
     fontSize: 16,
+    backgroundColor: "#ffffff",
+    color: "#374151",
   },
-  listContainer: {
-    flex: 1,
-    padding: 20,
+
+  // Search Stats
+  searchStats: {
+    backgroundColor: "#fef3c7",
+    borderRadius: 12,
+    padding: 12,
+    alignItems: "center",
+    marginTop: 8,
   },
+  statsText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#92400e",
+  },
+
+  // List Header
+  listHeaderSection: {
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    alignItems: "center",
+  },
+  availableTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#6b46c1",
+    marginBottom: 4,
+  },
+  availableSubtitle: {
+    fontSize: 14,
+    color: "#6b7280",
+  },
+
+  // List Content
+  listContent: {
+    paddingBottom: 40,
+  },
+
+  // Donation Cards
   donationCard: {
-    borderRadius: 10,
-    padding: 15,
-    backgroundColor: "#F8F8F8",
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+    padding: 20,
+    marginHorizontal: 20,
+    marginBottom: 16,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 6,
+    borderWidth: 2,
+    borderColor: "#e0d4f7",
   },
-  donationHeader: {
+
+  // Card Header
+  cardHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
+    alignItems: "flex-start",
+    marginBottom: 12,
+  },
+  foodInfo: {
+    flex: 1,
+  },
+  foodName: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#374151",
+    marginBottom: 4,
   },
   quantity: {
-    color: "#666",
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#6b46c1",
   },
+  statusBadge: {
+    backgroundColor: "#dcfce7",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#16a34a",
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#16a34a",
+  },
+
+  // Description
+  description: {
+    fontSize: 14,
+    color: "#6b7280",
+    lineHeight: 20,
+    marginBottom: 16,
+    fontStyle: "italic",
+  },
+
+  // Details
   donationDetails: {
-    gap: 5,
-    marginBottom: 15,
+    gap: 8,
+    marginBottom: 20,
   },
-  requestButton: {
-    backgroundColor: "#A1CEDC",
-    padding: 12,
-    borderRadius: 8,
+  detailRow: {
+    flexDirection: "row",
     alignItems: "center",
   },
-  buttonText: {
-    color: "#000000",
+  detailIcon: {
     fontSize: 16,
-    fontWeight: "bold",
+    marginRight: 8,
+    width: 20,
   },
-  listContent: {
-    padding: 20,
-    gap: 15,
+  detailText: {
+    fontSize: 14,
+    color: "#4b5563",
+    flex: 1,
+  },
+
+  // Request Button
+  requestButton: {
+    backgroundColor: "#f59e0b",
+    borderRadius: 16,
+    padding: 16,
+    alignItems: "center",
+    shadowColor: "#f59e0b",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  buttonIcon: {
+    fontSize: 20,
+    marginBottom: 4,
+  },
+  buttonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "700",
+    marginBottom: 2,
+  },
+  buttonSubtext: {
+    color: "rgba(255, 255, 255, 0.9)",
+    fontSize: 12,
+    fontWeight: "500",
   },
 });

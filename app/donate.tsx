@@ -1,8 +1,14 @@
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Pressable, ScrollView, StyleSheet, TextInput } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+} from "react-native";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -14,6 +20,44 @@ export default function DonateScreen() {
   const [description, setDescription] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [foodImage, setFoodImage] = useState<string | null>(null);
+
+  // Animation refs
+  const headerSlide = useRef(new Animated.Value(-50)).current;
+  const headerOpacity = useRef(new Animated.Value(0)).current;
+  const formSlide = useRef(new Animated.Value(100)).current;
+  const formOpacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // Staggered animation sequence
+    const animations = Animated.stagger(200, [
+      Animated.parallel([
+        Animated.timing(headerSlide, {
+          toValue: 0,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(headerOpacity, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+      ]),
+      Animated.parallel([
+        Animated.timing(formSlide, {
+          toValue: 0,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.timing(formOpacity, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]);
+
+    animations.start();
+  }, [headerSlide, headerOpacity, formSlide, formOpacity]);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -42,72 +86,147 @@ export default function DonateScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ScrollView style={styles.scrollContainer}>
-        <ThemedView style={styles.header}>
-          <ThemedView style={styles.headerRow}>
-            <Pressable style={styles.backButton} onPress={() => router.back()}>
-              <ThemedText>← Back</ThemedText>
+      <ScrollView
+        style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header Section - White background */}
+        <Animated.View
+          style={[
+            styles.headerSection,
+            {
+              transform: [{ translateY: headerSlide }],
+              opacity: headerOpacity,
+            },
+          ]}
+        >
+          <Pressable style={styles.backButton} onPress={() => router.back()}>
+            <ThemedText style={styles.backText}>← Back</ThemedText>
+          </Pressable>
+
+          <ThemedView style={styles.headerContent}>
+            <ThemedText style={styles.headerTitle}>Share Food</ThemedText>
+            <ThemedText style={styles.headerEmoji}>🍽️</ThemedText>
+            <ThemedText style={styles.headerSubtitle}>
+              Turn surplus into smiles - share your extra food with those in
+              need
+            </ThemedText>
+          </ThemedView>
+        </Animated.View>
+
+        {/* Form Section */}
+        <Animated.View
+          style={[
+            styles.formSection,
+            {
+              transform: [{ translateY: formSlide }],
+              opacity: formOpacity,
+            },
+          ]}
+        >
+          {/* Image Upload Card */}
+          <ThemedView style={styles.card}>
+            <ThemedText style={styles.cardTitle}>📸 Food Photo</ThemedText>
+            <ThemedText style={styles.cardSubtitle}>
+              Add a photo to make your donation more appealing
+            </ThemedText>
+            <Pressable style={styles.imageUpload} onPress={pickImage}>
+              {foodImage ? (
+                <Image source={{ uri: foodImage }} style={styles.foodImage} />
+              ) : (
+                <ThemedView style={styles.imagePlaceholder}>
+                  <ThemedText style={styles.imagePlaceholderIcon}>
+                    📷
+                  </ThemedText>
+                  <ThemedText style={styles.imagePlaceholderText}>
+                    Tap to add photo
+                  </ThemedText>
+                </ThemedView>
+              )}
             </Pressable>
-            <ThemedText type="title">Donate Food</ThemedText>
-          </ThemedView>
-          <ThemedText>Share your surplus food with those in need</ThemedText>
-        </ThemedView>
-
-        <ThemedView style={styles.form}>
-          <Pressable style={styles.imageUpload} onPress={pickImage}>
-            {foodImage ? (
-              <Image source={{ uri: foodImage }} style={styles.foodImage} />
-            ) : (
-              <ThemedText>Add Food Image</ThemedText>
-            )}
-          </Pressable>
-
-          <ThemedView style={styles.inputGroup}>
-            <ThemedText>Food Name</ThemedText>
-            <TextInput
-              style={styles.input}
-              value={foodName}
-              onChangeText={setFoodName}
-              placeholder="Enter food name"
-            />
           </ThemedView>
 
-          <ThemedView style={styles.inputGroup}>
-            <ThemedText>Quantity</ThemedText>
-            <TextInput
-              style={styles.input}
-              value={quantity}
-              onChangeText={setQuantity}
-              placeholder="Enter quantity (e.g., 2 kg, 5 portions)"
-            />
+          {/* Food Details Card */}
+          <ThemedView style={styles.card}>
+            <ThemedText style={styles.cardTitle}>🥘 Food Details</ThemedText>
+            <ThemedText style={styles.cardSubtitle}>
+              Tell us about your delicious donation
+            </ThemedText>
+
+            <ThemedView style={styles.inputGroup}>
+              <ThemedText style={styles.inputLabel}>Food Name</ThemedText>
+              <TextInput
+                style={styles.input}
+                value={foodName}
+                onChangeText={setFoodName}
+                placeholder="e.g., Homemade Biryani, Fresh Vegetables"
+                placeholderTextColor="#9ca3af"
+              />
+            </ThemedView>
+
+            <ThemedView style={styles.inputGroup}>
+              <ThemedText style={styles.inputLabel}>Quantity</ThemedText>
+              <TextInput
+                style={styles.input}
+                value={quantity}
+                onChangeText={setQuantity}
+                placeholder="e.g., 2 kg, 5 portions, 10 servings"
+                placeholderTextColor="#9ca3af"
+              />
+            </ThemedView>
+
+            <ThemedView style={styles.inputGroup}>
+              <ThemedText style={styles.inputLabel}>Description</ThemedText>
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                value={description}
+                onChangeText={setDescription}
+                placeholder="Describe your food - ingredients, preparation, any special notes..."
+                placeholderTextColor="#9ca3af"
+                multiline
+                numberOfLines={4}
+              />
+            </ThemedView>
+
+            <ThemedView style={styles.inputGroup}>
+              <ThemedText style={styles.inputLabel}>
+                Best Before Date
+              </ThemedText>
+              <TextInput
+                style={styles.input}
+                value={expiryDate}
+                onChangeText={setExpiryDate}
+                placeholder="DD/MM/YYYY"
+                placeholderTextColor="#9ca3af"
+              />
+            </ThemedView>
           </ThemedView>
 
-          <ThemedView style={styles.inputGroup}>
-            <ThemedText>Description</ThemedText>
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              value={description}
-              onChangeText={setDescription}
-              placeholder="Enter food description"
-              multiline
-              numberOfLines={4}
-            />
+          {/* Impact Card */}
+          <ThemedView style={styles.impactCard}>
+            <ThemedText style={styles.impactTitle}>🌟 Your Impact</ThemedText>
+            <ThemedText style={styles.impactText}>
+              {
+                "By sharing your food, you're helping reduce waste and bringing joy"
+              }
+              {
+                "to someone's day. Every meal shared makes our community stronger!💪"
+              }
+            </ThemedText>
           </ThemedView>
 
-          <ThemedView style={styles.inputGroup}>
-            <ThemedText>Expiry Date</ThemedText>
-            <TextInput
-              style={styles.input}
-              value={expiryDate}
-              onChangeText={setExpiryDate}
-              placeholder="DD/MM/YYYY"
-            />
-          </ThemedView>
-
+          {/* Submit Button */}
           <Pressable style={styles.donateButton} onPress={handleDonate}>
-            <ThemedText style={styles.buttonText}>Submit Donation</ThemedText>
+            <ThemedText style={styles.buttonIcon}>🎉</ThemedText>
+            <ThemedText style={styles.buttonText}>Share My Food</ThemedText>
+            <ThemedText style={styles.buttonSubtext}>
+              {"Make someone's day!"}
+            </ThemedText>
           </Pressable>
-        </ThemedView>
+        </Animated.View>
+
+        {/* Bottom Spacer */}
+        <ThemedView style={styles.bottomSpacer}>{""}</ThemedView>
       </ScrollView>
     </ThemedView>
   );
@@ -116,69 +235,194 @@ export default function DonateScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingBottom: 40,
+    backgroundColor: "#fefefe",
   },
   scrollContainer: {
     flex: 1,
-    paddingTop: 30, // Add padding to create space at the top
   },
-  header: {
-    padding: 20,
-    alignItems: "center",
-    gap: 10,
-  },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    position: "relative",
-    justifyContent: "center",
+
+  // Header Section - White background
+  headerSection: {
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 30,
+    backgroundColor: "#ffffff",
   },
   backButton: {
-    position: "absolute",
-    left: 0,
-    padding: 8,
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(107, 70, 193, 0.1)",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginBottom: 20,
   },
-  form: {
-    padding: 20,
-    gap: 20,
+  backText: {
+    color: "#6b46c1",
+    fontWeight: "600",
+    fontSize: 16,
   },
+  headerContent: {
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: "800",
+    color: "#6b46c1",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  headerEmoji: {
+    fontSize: 40,
+    marginBottom: 12,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: "#6b7280",
+    textAlign: "center",
+    lineHeight: 24,
+    paddingHorizontal: 20,
+  },
+
+  // Form Section
+  formSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+
+  // Card Styles
+  card: {
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+    padding: 24,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 15,
+    elevation: 8,
+    borderWidth: 2,
+    borderColor: "#e0d4f7",
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#6b46c1",
+    marginBottom: 6,
+  },
+  cardSubtitle: {
+    fontSize: 14,
+    color: "#6b7280",
+    marginBottom: 20,
+  },
+
+  // Image Upload
   imageUpload: {
     height: 200,
-    backgroundColor: "#F0F0F0",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    borderRadius: 16,
+    overflow: "hidden",
+    backgroundColor: "#f8fafc",
+    borderWidth: 2,
+    borderColor: "#e0d4f7",
+    borderStyle: "dashed",
   },
   foodImage: {
     width: "100%",
     height: "100%",
-    borderRadius: 10,
+    borderRadius: 14,
   },
+  imagePlaceholder: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fafbfc",
+  },
+  imagePlaceholderIcon: {
+    fontSize: 32,
+    marginBottom: 8,
+  },
+  imagePlaceholderText: {
+    fontSize: 16,
+    color: "#6b7280",
+    fontWeight: "500",
+  },
+
+  // Input Styles
   inputGroup: {
-    gap: 8,
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#374151",
+    marginBottom: 8,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#CCCCCC",
-    borderRadius: 8,
-    padding: 12,
+    borderWidth: 2,
+    borderColor: "#e5e7eb",
+    borderRadius: 12,
+    padding: 16,
     fontSize: 16,
+    backgroundColor: "#ffffff",
+    color: "#374151",
   },
   textArea: {
     height: 100,
     textAlignVertical: "top",
   },
+
+  // Impact Card
+  impactCard: {
+    backgroundColor: "#fef3c7",
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 24,
+    borderWidth: 2,
+    borderColor: "#f59e0b",
+  },
+  impactTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#92400e",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  impactText: {
+    fontSize: 14,
+    color: "#92400e",
+    textAlign: "center",
+    lineHeight: 20,
+  },
+
+  // Submit Button
   donateButton: {
-    backgroundColor: "#A1CEDC",
-    padding: 16,
-    borderRadius: 8,
+    backgroundColor: "#8b5fbf",
+    borderRadius: 20,
+    padding: 20,
     alignItems: "center",
-    marginTop: 20,
+    shadowColor: "#8b5fbf",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 15,
+    elevation: 8,
+    marginBottom: 20,
+  },
+  buttonIcon: {
+    fontSize: 24,
+    marginBottom: 4,
   },
   buttonText: {
-    color: "#000000",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: "#ffffff",
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: 2,
+  },
+  buttonSubtext: {
+    color: "rgba(255, 255, 255, 0.9)",
+    fontSize: 12,
+    fontWeight: "500",
+  },
+
+  bottomSpacer: {
+    height: 40,
   },
 });

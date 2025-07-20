@@ -26,7 +26,7 @@ export default function HomeScreen() {
 
   // Counter animation functions
   const animateMeals = () => {
-    const targetMeals = 1247;
+    const targetMeals = 254;
     const increment = targetMeals / 120;
     const timer = setInterval(() => {
       mealsCount.current += increment;
@@ -39,7 +39,7 @@ export default function HomeScreen() {
   };
 
   const animateDonors = () => {
-    const targetDonors = 386;
+    const targetDonors = 82;
     const increment = targetDonors / 120;
     const timer = setInterval(() => {
       donorsCount.current += increment;
@@ -204,7 +204,7 @@ export default function HomeScreen() {
           ]}
         >
           <ThemedView style={styles.statsHeader}>
-            <ThemedText style={styles.statsTitle}>🚀 Live Impact</ThemedText>
+            <ThemedText style={styles.statsTitle}>Live Impact</ThemedText>
             <ThemedText style={styles.statsSubtitle}>
               Real-time community impact
             </ThemedText>
@@ -216,7 +216,6 @@ export default function HomeScreen() {
                 {displayMeals.toLocaleString()}
               </ThemedText>
               <ThemedText style={styles.statLabel}>Meals Shared</ThemedText>
-              <ThemedText style={styles.statEmoji}>🍜</ThemedText>
             </ThemedView>
 
             <ThemedView style={styles.donorsCard}>
@@ -224,7 +223,6 @@ export default function HomeScreen() {
                 {displayDonors.toLocaleString()}
               </ThemedText>
               <ThemedText style={styles.statLabel}>Food Heroes</ThemedText>
-              <ThemedText style={styles.statEmoji}>👥</ThemedText>
             </ThemedView>
           </ThemedView>
 
@@ -282,24 +280,24 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#fefefe",
   },
   scrollContainer: {
     flex: 1,
   },
 
-  // Header Section
+  // Header Section - Purple gradient background
   headerSection: {
     paddingHorizontal: 24,
     paddingTop: 60,
     paddingBottom: 20,
-    backgroundColor: "#667eea",
+    backgroundColor: "#8b5fbf", // Rich purple
   },
   loginButton: {
     position: "absolute",
     right: 24,
     top: 60,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 25,
@@ -326,7 +324,7 @@ const styles = StyleSheet.create({
   titleAccent: {
     fontSize: 48,
     fontWeight: "800",
-    color: "#ffd700",
+    color: "#ffd700", // Gold/yellow accent
     textAlign: "center",
     marginTop: -8,
     letterSpacing: 2,
@@ -339,7 +337,7 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
   },
 
-  // Hero Section
+  // Hero Section - White card with purple accents
   heroSection: {
     paddingHorizontal: 20,
     paddingVertical: 24,
@@ -353,24 +351,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 8,
-    borderWidth: 1,
-    borderColor: "rgba(0, 0, 0, 0.05)",
+    borderWidth: 2,
+    borderColor: "#e0d4f7", // Light purple border
   },
   heroTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#1a202c",
+    color: "#6b46c1", // Purple text
     textAlign: "center",
     marginBottom: 12,
   },
   heroDescription: {
     fontSize: 16,
-    color: "#4a5568",
+    color: "#6b7280",
     textAlign: "center",
     lineHeight: 24,
   },
 
-  // Action Section
+  // Action Section - Purple and yellow buttons
   actionSection: {
     paddingHorizontal: 20,
     paddingVertical: 8,
@@ -387,10 +385,10 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   donateButton: {
-    backgroundColor: "#ff6b6b",
+    backgroundColor: "#8b5fbf", // Rich purple
   },
   requestButton: {
-    backgroundColor: "#4ecdc4",
+    backgroundColor: "#f59e0b", // Warm yellow/amber
   },
   actionIcon: {
     fontSize: 32,
@@ -408,7 +406,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  // Stats Section
+  // Stats Section - White cards with purple and yellow accents
   statsSection: {
     paddingHorizontal: 20,
     paddingVertical: 24,
@@ -420,7 +418,7 @@ const styles = StyleSheet.create({
   statsTitle: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#1a202c",
+    color: "#6b46c1", // Purple
     marginBottom: 4,
   },
   statsSubtitle: {
@@ -444,9 +442,9 @@ const styles = StyleSheet.create({
     elevation: 4,
     position: "relative",
     overflow: "hidden",
-    backgroundColor: "#fff5f5",
-    borderWidth: 1,
-    borderColor: "#fed7e2",
+    backgroundColor: "#ffffff",
+    borderWidth: 2,
+    borderColor: "#e0d4f7", // Light purple border
   },
   donorsCard: {
     flex: 1,
@@ -460,20 +458,20 @@ const styles = StyleSheet.create({
     elevation: 4,
     position: "relative",
     overflow: "hidden",
-    backgroundColor: "#f0fff4",
-    borderWidth: 1,
-    borderColor: "#c6f6d5",
+    backgroundColor: "#ffffff",
+    borderWidth: 2,
+    borderColor: "#fef3c7", // Light yellow border
   },
   statNumber: {
     fontSize: 28,
     fontWeight: "800",
-    color: "#1a202c",
+    color: "#6b46c1", // Purple numbers
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#4a5568",
+    color: "#6b7280",
     textAlign: "center",
   },
   statEmoji: {
@@ -484,20 +482,20 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   impactBanner: {
-    backgroundColor: "#f7fafc",
+    backgroundColor: "#fef3c7", // Light yellow background
     borderRadius: 12,
     padding: 16,
-    borderWidth: 1,
-    borderColor: "#e2e8f0",
+    borderWidth: 2,
+    borderColor: "#f59e0b", // Yellow border
   },
   impactText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#2d3748",
+    color: "#92400e", // Darker yellow/amber text
     textAlign: "center",
   },
 
-  // Recent Section
+  // Recent Section - White cards with purple accents
   recentSection: {
     paddingHorizontal: 20,
     paddingVertical: 12,
@@ -509,7 +507,7 @@ const styles = StyleSheet.create({
   recentTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#1a202c",
+    color: "#6b46c1", // Purple
     marginBottom: 4,
   },
   recentSubtitle: {
@@ -526,13 +524,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
-    borderLeftWidth: 3,
-    borderLeftColor: "#667eea",
+    borderLeftWidth: 4,
+    borderLeftColor: "#8b5fbf", // Purple left border
   },
   activityText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#1a202c",
+    color: "#374151",
     marginBottom: 4,
   },
   activityTime: {
@@ -547,7 +545,7 @@ const styles = StyleSheet.create({
   viewMoreText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#667eea",
+    color: "#8b5fbf", // Purple
   },
 
   bottomSpacer: {
