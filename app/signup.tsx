@@ -5,6 +5,8 @@ import { Pressable, StyleSheet, TextInput } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
+
+
 export default function SignupScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -12,16 +14,39 @@ export default function SignupScreen() {
   const [city, setCity] = useState(""); // New state for city
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const handleSignup = async () => {
+  if (password !== confirmPassword) {
+    console.log("Passwords do not match");
+    return;
+  }
 
-  const handleSignup = () => {
-    // Add your signup logic here
-    if (password !== confirmPassword) {
-      console.log("Passwords do not match");
-      return;
+  try {
+    const response = await fetch("http://192.168.0.6/api/users/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        username,
+        city,
+        password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Signup successful:", data);
+      router.push("/"); 
+    } else {
+      console.log("Signup failed:", data.message || data.error);
     }
-    console.log("Signup attempted:", { email, username, city, password });
-    router.push("/");
-  };
+  } catch (err) {
+    console.error("Signup error:", err);
+  }
+};
+
 
   return (
     <ThemedView style={styles.container}>

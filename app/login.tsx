@@ -10,10 +10,30 @@ export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // Add your login logic here
-    console.log("Login attempted:", { username, password });
-    router.push("/");
+  import React, { useState } from 'react';
+import { View, TextInput, Button, Alert } from 'react-native';
+import axios from 'axios';
+
+const LoginScreen = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://192.168.0.6:5000/api/users/login', {
+        email,
+        password,
+      });
+
+      if (response.data.success) {
+        Alert.alert('Login Successful', `Welcome, ${response.data.user.name}`);
+      } else {
+        Alert.alert('Login Failed', response.data.message);
+      }
+    } catch (error: any) {
+      console.error(error);
+      Alert.alert('Error', error.response?.data?.message || 'Something went wrong');
+    }
   };
 
   return (
