@@ -13,6 +13,10 @@ import {
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 
+import React, { useState } from 'react';
+import { View, TextInput, Button, Alert } from 'react-native';
+import axios from 'axios';
+
 export default function DonateScreen() {
   const router = useRouter();
   const [foodName, setFoodName] = useState("");
@@ -72,17 +76,33 @@ export default function DonateScreen() {
     }
   };
 
-  const handleDonate = () => {
-    // Add your donation submission logic here
-    console.log("Donation submitted:", {
+ const handleDonate = async () => {
+  try {
+    const response = await axios.post('http://192.168.0.6:5000/api/donations/submit', {
       foodName,
       quantity,
       description,
       expiryDate,
-      foodImage,
+      foodImage, 
     });
-    router.push("/");
-  };
+
+    if (response.data.success) {
+      alert("Donation submitted successfully!");
+      setFoodName("");
+      setQuantity("");
+      setDescription("");
+      setExpiryDate("");
+      setFoodImage(null);
+      router.push("/");
+    } else {
+      alert("Failed to submit: " + response.data.message);
+    }
+  } catch (error: any) {
+    console.error("Donation error:", error);
+    alert("An error occurred. Please try again later.");
+  }
+};
+
 
   return (
     <ThemedView style={styles.container}>
