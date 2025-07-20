@@ -13,25 +13,6 @@ import { ThemedView } from "@/components/ThemedView";
 
 import axios from 'axios';
 
-const submitRequest = async () => {
-  try {
-    const response = await axios.post('http://192.168.0.6:5000/api/requests', {
-      name: 'John Doe',
-      phone: '9876543210',
-      address: '123 Street, City',
-      itemNeeded: 'Rice',
-      quantity: 5
-    });
-
-    if (response.status === 201) {
-      alert('Request submitted successfully');
-    }
-  } catch (error) {
-    console.error('Request submission failed:', error);
-    alert('Failed to submit request');
-  }
-};
-
 
 // Interface for the donation item type
 interface DonationItem {
@@ -76,6 +57,36 @@ const MOCK_DONATIONS: DonationItem[] = [
 ];
 
 export default function RequestScreen() {
+  const handleRequest = async (donationId: string) => {
+  try {
+    const selectedDonation = MOCK_DONATIONS.find(d => d.id === donationId);
+
+    if (!selectedDonation) {
+      alert("Donation not found");
+      return;
+    }
+
+    const response = await axios.post('http://192.168.0.6:5000/api/requests', {
+      name: "", 
+      phone: "",
+      address: "123 Street, City",
+      itemNeeded: selectedDonation.foodName,
+      quantity: selectedDonation.quantity,
+      donorName: selectedDonation.donorName,
+      location: selectedDonation.location,
+    });
+
+    if (response.status === 201) {
+      alert("Food request submitted successfully!");
+    } else {
+      alert("Request failed. Try again.");
+    }
+  } catch (error) {
+    console.error("Error sending request:", error);
+    alert("Failed to submit request.");
+  }
+};
+
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [location, setLocation] = useState("");
@@ -116,11 +127,24 @@ export default function RequestScreen() {
     animations.start();
   }, [headerSlide, headerOpacity, searchSlide, listSlide]);
 
-  const handleRequest = (itemId: string) => {
-    // Add your request logic here
-    console.log("Requested item:", itemId);
-    router.push("/");
-  };
+const submitRequest = async () => {
+  try {
+    const response = await axios.post('http://192.168.0.6:5000/api/requests', {
+      name: 'John Doe',
+      phone: '9876543210',
+      address: '123 Street, City',
+      itemNeeded: 'Rice',
+      quantity: 5
+    });
+
+    if (response.status === 201) {
+      alert('Request submitted successfully');
+    }
+  } catch (error) {
+    console.error('Request submission failed:', error);
+    alert('Failed to submit request');
+  }
+};
 
   const ListHeader = () => (
     <>
