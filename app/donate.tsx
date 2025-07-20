@@ -1,7 +1,8 @@
+import axios from "axios";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Pressable,
@@ -12,10 +13,6 @@ import {
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-
-import React, { useState } from 'react';
-import { View, TextInput, Button, Alert } from 'react-native';
-import axios from 'axios';
 
 export default function DonateScreen() {
   const router = useRouter();
@@ -76,33 +73,35 @@ export default function DonateScreen() {
     }
   };
 
- const handleDonate = async () => {
-  try {
-    const response = await axios.post('http://192.168.0.6:5000/api/donations/submit', {
-      foodName,
-      quantity,
-      description,
-      expiryDate,
-      foodImage, 
-    });
+  const handleDonate = async () => {
+    try {
+      const response = await axios.post(
+        "http://192.168.0.6:5000/api/donations/submit",
+        {
+          foodName,
+          quantity,
+          description,
+          expiryDate,
+          foodImage,
+        }
+      );
 
-    if (response.data.success) {
-      alert("Donation submitted successfully!");
-      setFoodName("");
-      setQuantity("");
-      setDescription("");
-      setExpiryDate("");
-      setFoodImage(null);
-      router.push("/");
-    } else {
-      alert("Failed to submit: " + response.data.message);
+      if (response.data.success) {
+        alert("Donation submitted successfully!");
+        setFoodName("");
+        setQuantity("");
+        setDescription("");
+        setExpiryDate("");
+        setFoodImage(null);
+        router.push("/");
+      } else {
+        alert("Failed to submit: " + response.data.message);
+      }
+    } catch (error: any) {
+      console.error("Donation error:", error);
+      alert("An error occurred. Please try again later.");
     }
-  } catch (error: any) {
-    console.error("Donation error:", error);
-    alert("An error occurred. Please try again later.");
-  }
-};
-
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -443,6 +442,6 @@ const styles = StyleSheet.create({
   },
 
   bottomSpacer: {
-    height: 40,
+    height: 20,
   },
 });

@@ -17,7 +17,7 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { label: "Home", route: "/" },
   { label: "Donate Food", route: "/donate" },
-  { label: "Request Food", route: "/request" },
+  { label: "Find Food", route: "/request" },
   { label: "About Us", route: "/about" },
   { label: "Our Vision", route: "/vision" },
 ];

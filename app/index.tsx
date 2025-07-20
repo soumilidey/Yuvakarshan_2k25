@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Pressable, ScrollView, StyleSheet } from "react-native";
 
+import { Footer } from "@/components/Footer";
 import { Menu } from "@/components/Menu";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -260,18 +261,13 @@ export default function HomeScreen() {
             </ThemedText>
             <ThemedText style={styles.activityTime}>8 minutes ago</ThemedText>
           </ThemedView>
-
-          <Pressable style={styles.viewMoreButton}>
-            <ThemedText style={styles.viewMoreText}>
-              View All Activity →
-            </ThemedText>
-          </Pressable>
         </Animated.View>
 
         {/* Bottom Spacer */}
         <ThemedView style={styles.bottomSpacer}>
           <ThemedText> </ThemedText>
         </ThemedView>
+        <Footer />
       </ScrollView>
     </ThemedView>
   );
